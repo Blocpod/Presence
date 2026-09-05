@@ -41,3 +41,15 @@ Release package includes original mission, API/architecture, research with prima
 User feedback: the olive/sage brand colors were not working. Applied a graphite and porcelain palette with restrained blue on selected navigation, primary actions, controls and the economic chart. Neutralized the conversation overlays and WebGL room; preserved readable contrast and semantic warning colors. Named the primary accent tokens by purpose instead of the prior green/lime hues.
 
 Verification: strict typecheck, lint, 17 tests and production build pass. All seven browser journeys pass (33.3s), including zero axe violations on tested desktop pages and mobile conversation. Visually checked the revised overview in the existing in-app production preview at port 3001. Updated the committed screenshots. This is a new palette iteration; the original independent design score describes the earlier release and is not a new user preference study.
+
+## Fan encounter loop — 2026-09-05
+
+Observed: creator studio had no distinct consumer surface. Chose a portrait-led encounter over a notebook-first UI or 3D-first environment after primary-source research. Built `/presence/mira`, `/studio`, `/demo`, separate audience-signed fan authentication and shared runtime actions.
+
+Pass 1 independent screenshots found clipped long replies, undersized mobile imagery, face-crossing decorative line, visible context reset and a voice control subordinate to typing. The observed subset scored approximately 72/100. Corrected each: high-resolution cover image, explicit full-reply action, concise grounded recall, persistent current context and a large Speak/Interrupt action.
+
+Pass 2 complete independent review scored 83.4/100. Replaced the duplicate inset spatial scene with a primary room, made Visual writing intent-based, connected the thread to actual measured memory/reply anchors, and changed a timed blocking arrival into a persistent nonblocking creator declaration.
+
+Pass 3 scored 90.0/100 but caught hidden silent spatial replies and a 2.18:1 faded-rail contrast regression. Added the visible authored spatial ribbon/full reply and removed the decorative rail. Independent recheck closed both defects; final score 91.4/100, with 95+ unclaimed. Refined essential small-label sizing and quieted the metallic spatial frame/light as a final visual comfort pass.
+
+Independent engineering tests also found and verified fixes for keyboard wrap, error banners covering retry, invisible policy refusals, duplicate sandbox events after lost committed responses, late speech callbacks, consent withdrawal during capture and delayed mode entry after leaving. Final integrated run: 22 unit/runtime tests, 19 production browser journeys, 14 zero-violation axe scans, successful typecheck/lint/build. No paid API or real transaction. Actual hardware quality and production platform integration remain outside the local demonstration evidence.

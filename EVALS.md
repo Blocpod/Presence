@@ -71,3 +71,17 @@ npm run test:e2e
 ```
 
 If testing installed Chrome: `PRESENCE_BROWSER_CHANNEL=chrome npm run test:e2e`. The runner starts a localhost production preview automatically. For the latency smoke experiment start a local server at port 3001 with demo mode enabled, then `node scripts/benchmark.mjs`. Browser-generated evidence is ignored under `output/playwright/`; selected sanitized fictional screenshots and concise machine results are committed under `docs/`.
+
+## Fan experience release — 2026-09-05
+
+The dedicated fan encounter and two-sided director extend the original demonstration. Final integrated verification on the local production build passed **22 runtime/voice tests and 19 browser journeys** (12 fan,7 creator), with typecheck, ESLint and the optimized production build passing. The consolidated browser run took approximately 1.2 minutes in installed desktop Chrome, using 390×844 for the primary fan journey and 1440px for desktop checks.
+
+**14 automated accessibility scans reported zero violations** in the consolidated run: five fan scenes, the director, seven studio desktop scenes and one studio mobile scan. The independent final visual review additionally scanned ten desktop/mobile states and 375×667 Spatial, also with zero violations. These are overlapping scoped checks, not 25 unique pages or full WCAG certification.
+
+The fan journeys exercise entry, own notes and cross-surface retrieval, visual writing intent, silent spatial response visibility/full transcript, independent operator/fan roles, pause/revocation/entitlements, persistent human arrival and AI suspension, native sheet keyboard wrap and focus restoration, offline recovery, visible moderation refusal, idempotency after a committed-but-lost response, browser speech cancellation, microphone-consent withdrawal, late mode-response rejection, and the director's real shared runtime actions. Speech tests mock browser interfaces; no real microphone audio is transmitted by the tests.
+
+The independent fan design score is **91.4/100** after multiple screenshot/interaction review loops. The 95+ target is **not claimed**. The remaining qualitative gap is documented in docs/FAN-DESIGN-REVIEW.md; absent real-time avatars or paid providers were not used as excuses for design defects. All specifically identified functional/layout/contrast defects were corrected and rechecked. Curated fictional screenshots are committed in docs/screenshots/fan-*.png.
+
+Performance evidence remains deliberately scoped: one fresh unthrottled local production browser context reported 52 ms LCP, 29.3 ms DOMContentLoaded, 61 ms load, and 237,168 bytes across recorded resource transfers. This is not public-network Core Web Vitals or a real-phone benchmark. Instrumented Spatial observed zero WebGL draws during a 1.2-second idle window, redraw on orbit, and return to idle; no canvas remained after unmount. See docs/FAN-SPATIAL-QA.md. Physical XR, browser/audio hardware, sustained mobile thermal behavior, screen readers, and broader network/device conditions remain unverified.
+
+Machine artifacts are local and ignored under output/playwright/fan/, including production-verification.json and axe-fan.json. Source tests are committed and the GitHub workflow runs the full suite using Chromium. No API credentials, real identities or billing were introduced.

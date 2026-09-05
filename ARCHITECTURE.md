@@ -4,16 +4,17 @@ PRESENCE is a single-node, API-first demonstration of a licensed digital presenc
 
 ## Components and ownership
 
-| Component | Implementation | Responsibility |
-|---|---|---|
-| Creator and fan UI | `src/components/studio.tsx` | Onboarding, versioned creator controls, relationship memory, conversation, takeover, usage and economics |
-| Surface renderers | `src/lib/voice.ts`, `src/components/spatial-stage.tsx` | Browser voice and interactive 3D; same governed session and fan memory |
-| API | `src/app/api/v1/[...path]/route.ts` | JSON routes, strict validation, signed-session identification, same-origin mutation boundary |
-| Authentication boundary | `src/lib/server/auth.ts` | Local-only role bootstrap, HttpOnly HMAC cookie, eight-hour expiry, workspace scope |
-| Runtime | `src/lib/server/runtime.ts` | Authorization, role checks, entitlements, input/output policy, relationships, takeover, ledger and audit |
-| Provider seam | `src/lib/server/provider.ts` | Typed `PresenceProvider.generate(context)` interface and deterministic local adapter |
-| Persistence | `src/lib/server/store.ts` | SQLite transactions, workspace state, seed fixtures, retention, local signing material |
-| Shared API contract | `src/lib/types.ts`, `docs/API.md` | Creator, fan, session, memory, metering and response definitions |
+| Component                  | Implementation                                         | Responsibility                                                                                           |
+| -------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| Creator studio             | `src/components/studio.tsx`                            | Onboarding, versioned creator controls, relationship memory, conversation, takeover, usage and economics |
+| Fan encounter and director | `src/components/fan/`                                  | Portrait-led fan journey, mode renderers, secondary sheets and separate operator demo entry              |
+| Surface renderers          | `src/lib/voice.ts`, `src/components/spatial-stage.tsx` | Browser voice and interactive 3D; same governed session and fan memory                                   |
+| API                        | `src/app/api/v1/[...path]/route.ts`                    | JSON routes, strict validation, signed-session identification, same-origin mutation boundary             |
+| Authentication boundary    | `src/lib/server/auth.ts`                               | Local-only role bootstrap, HttpOnly HMAC cookie, eight-hour expiry, workspace scope                      |
+| Runtime                    | `src/lib/server/runtime.ts`                            | Authorization, role checks, entitlements, input/output policy, relationships, takeover, ledger and audit |
+| Provider seam              | `src/lib/server/provider.ts`                           | Typed `PresenceProvider.generate(context)` interface and deterministic local adapter                     |
+| Persistence                | `src/lib/server/store.ts`                              | SQLite transactions, workspace state, seed fixtures, retention, local signing material                   |
+| Shared API contract        | `src/lib/types.ts`, `docs/API.md`                      | Creator, fan, session, memory, metering and response definitions                                         |
 
 ## Actual storage model
 
@@ -63,3 +64,7 @@ Keep the API and provider boundary, and replace the internals in stages:
 6. Validate data minimization and usefulness of persistent memory with consenting pilot participants before adding semantic retrieval or more sensitive relationship attributes.
 
 The extension path is platform integration: the incumbent keeps distribution, identity verification, subscriptions and checkout; PRESENCE supplies the governed presence runtime, representation controls, scoped relationship context and auditable usage events.
+
+## Fan surface addition
+
+The fan now has its own `/presence/mira` route and audience-bound `presence_fan` cookie. `/studio` preserves the operator UI, while `/demo` pairs both views and exposes only explicitly labeled operator controls. `/api/v1/fan/*` reuses the existing domain runtime with a fan actor; it cannot mutate creator or membership privileges. Fan-first provisioning is an audited local-only fictional bootstrap for a new workspace; it never reactivates an existing license. The latest thought carries across surface sessions with historical attribution, and pending interaction IDs persist through uncertain response retries. See docs/FAN-EXPERIENCE.md and docs/API.md.

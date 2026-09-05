@@ -9,6 +9,7 @@ import {
   deleteFanMemories,
   deleteMemory,
   getState,
+  initializeFanDemo,
   patchCreator,
   patchFan,
   sendMessage,
@@ -16,6 +17,8 @@ import {
 } from "../src/lib/server/runtime";
 import {
   bootstrapActor,
+  COOKIE,
+  FAN_COOKIE,
   localDemoAllowed,
   readActor,
   sameOrigin,
@@ -23,6 +26,7 @@ import {
 } from "../src/lib/server/auth";
 import { transact } from "../src/lib/server/store";
 import { readJsonBody } from "../src/lib/server/request";
+import { GET as apiGET, POST as apiPOST, PATCH as apiPATCH, DELETE as apiDELETE } from "../src/app/api/v1/[...path]/route";
 function setup() {
   const actor: Actor = { role: "creator", workspaceId: randomUUID() };
   patchCreator(actor, {
@@ -377,4 +381,106 @@ test("same-origin supports Next loopback canonicalization without trusting forwa
   assert.throws(() => sameOrigin(new Request("http://localhost:3000/api/v1/demo", { headers: { host: "127.0.0.1:3000", origin: "http://localhost:3000" } })), /same-origin/);
   assert.throws(() => sameOrigin(new Request("http://localhost:3000/api/v1/demo", { headers: { host: "evil.example", origin: "http://evil.example" } })), /host/);
   assert.throws(() => sameOrigin(new Request("http://localhost:3000/api/v1/demo", { headers: { host: "localhost:3000", "x-forwarded-host": "evil.example", origin: "http://evil.example" } })), /same-origin/);
+});
+
+test("fan and operator cookies are independently signed and cannot be substituted", () => {
+  const operator = setup();
+  const fan: Actor = { ...operator, role: "fan", fanId: "fan-alex" };
+  const operatorToken = signActor(operator);
+  const fanToken = signActor(fan, FAN_COOKIE);
+  const request = new Request("http://localhost:3000", { headers: { cookie: `${COOKIE}=${operatorToken}; ${FAN_COOKIE}=${fanToken}` } });
+  assert.equal(readActor(request)?.role, "creator");
+  assert.equal(readActor(request, FAN_COOKIE)?.role, "fan");
+  assert.equal(readActor(request)?.workspaceId, readActor(request, FAN_COOKIE)?.workspaceId);
+  assert.equal(readActor(new Request("http://localhost:3000", { headers: { cookie: `${FAN_COOKIE}=${operatorToken}` } }), FAN_COOKIE), null);
+  assert.equal(readActor(new Request("http://localhost:3000", { headers: { cookie: `${COOKIE}=${fanToken}` } })), null);
+});
+
+test("fan-first bootstrap seeds only a new fictional license and never overrides existing creator control", () => {
+  const fresh: Actor = { role: "fan", fanId: "fan-alex", workspaceId: randomUUID() };
+  assert.equal(initializeFanDemo(fresh, true).creator.licenseStatus, "active");
+  const operator: Actor = { role: "creator", workspaceId: fresh.workspaceId };
+  assert.ok(getState(operator).audit.some(event => event.action === "license.demo.seeded"));
+  patchCreator(operator, { enabled: false });
+  assert.equal(initializeFanDemo(fresh, true).creator.enabled, false);
+  patchCreator(operator, { licenseStatus: "revoked" });
+  assert.equal(initializeFanDemo(fresh, true).creator.licenseStatus, "revoked");
+  const pending = { ...fresh, workspaceId: randomUUID() };
+  getState(pending);
+  assert.equal(initializeFanDemo(pending, true).creator.licenseStatus, "pending");
+});
+
+async function fanApi(path: string, method: "GET" | "POST" | "PATCH" | "DELETE", body?: unknown, cookie = "", origin = "http://localhost:3000") {
+  const request = new Request(`http://localhost:3000/api/v1/${path}`, {
+    method,
+    headers: { origin, host: "localhost:3000", "content-type": "application/json", cookie },
+    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+  });
+  const handler = method === "GET" ? apiGET : method === "PATCH" ? apiPATCH : method === "DELETE" ? apiDELETE : apiPOST;
+  return handler(request, { params: Promise.resolve({ path: path.split("/") }) });
+}
+
+test("fan namespace preserves studio cookie and enforces fan runtime access", async () => {
+  const operator = setup();
+  const operatorToken = signActor(operator);
+  const response = await fanApi("fan/demo", "POST", {}, `${COOKIE}=${operatorToken}`);
+  assert.equal(response.status, 200);
+  assert.equal(response.cookies.get(COOKIE), undefined);
+  const fanToken = response.cookies.get(FAN_COOKIE)!.value;
+  const cookies = `${COOKIE}=${operatorToken}; ${FAN_COOKIE}=${fanToken}`;
+  const state = await response.json();
+  assert.equal(state.actor.role, "fan");
+  assert.equal(state.actor.workspaceId, operator.workspaceId);
+  assert.equal(state.fans.length, 1);
+  const created = await fanApi("fan/sessions", "POST", { fanId: "fan-alex", surface: "text" }, cookies);
+  assert.equal(created.status, 201);
+  const { sessionId } = await created.json();
+  const sent = await fanApi(`fan/sessions/${sessionId}/messages`, "POST", message("What do you remember?"), cookies);
+  assert.equal(sent.status, 200);
+  assert.match((await sent.json()).sessions[0].messages.at(-1).text, /Kyoto/);
+  for (const [path, body] of [["fan/creator", { enabled: false }], ["fan/fans/fan-alex", { surfaces: ["spatial"] }], ["fan/fans/fan-jordan", { memoryConsent: false }]] as const)
+    assert.equal((await fanApi(path, "PATCH", body, cookies)).status, 403);
+  assert.equal((await fanApi(`fan/sessions/${sessionId}/takeover`, "POST", { mode: "human" }, cookies)).status, 403);
+  assert.equal((await fanApi("fan/reset", "POST", {}, cookies)).status, 403);
+  assert.equal((await fanApi("fan/sessions", "POST", { fanId: "fan-jordan", surface: "text" }, cookies)).status, 403);
+  assert.equal((await fanApi("fan/state", "GET", undefined, `${COOKIE}=${operatorToken}`)).status, 401);
+  takeover(operator, sessionId, { mode: "human" });
+  await fanApi(`fan/sessions/${sessionId}/messages`, "POST", message("Is the operator here?"), cookies);
+  assert.equal(getState(operator).sessions[0].messages.at(-1)!.role, "fan");
+  patchCreator(operator, { enabled: false });
+  await fanApi("fan/demo", "POST", {}, cookies);
+  assert.equal(getState(operator).creator.enabled, false);
+  assert.equal((await fanApi(`fan/sessions/${sessionId}/messages`, "POST", message("hello"), cookies)).status, 403);
+});
+
+test("fan-first namespace provisions both local demo cookies and rejects privileged or remote bootstrap", async () => {
+  const response = await fanApi("fan/demo", "POST", {});
+  assert.equal(response.status, 200);
+  assert.ok(response.cookies.get(COOKIE));
+  assert.ok(response.cookies.get(FAN_COOKIE));
+  assert.equal((await response.json()).creator.licenseStatus, "active");
+  assert.equal((await fanApi("fan/demo", "POST", { role: "admin" })).status, 400);
+  assert.equal((await fanApi("fan/demo", "POST", {}, "", "https://evil.example")).status, 403);
+  const remote = new Request("https://presence.example/api/v1/fan/demo", { method: "POST", headers: { origin: "https://presence.example", "content-type": "application/json" }, body: "{}" });
+  assert.equal((await apiPOST(remote, { params: Promise.resolve({ path: ["fan", "demo"] }) })).status, 403);
+});
+
+test("fan namespace exposes only own memory controls and persists consent across surfaces", async () => {
+  const operator = setup();
+  const fan: Actor = { ...operator, role: "fan", fanId: "fan-alex" };
+  const cookies = `${FAN_COOKIE}=${signActor(fan, FAN_COOKIE)}`;
+  const foreignMemory = getState(operator).memories.find(memory => memory.fanId === "fan-jordan")!;
+  assert.equal((await fanApi(`fan/memories/${foreignMemory.id}`, "DELETE", undefined, cookies)).status, 403);
+  const saved = await fanApi("fan/memories", "POST", { fanId: "fan-alex", text: "Enjoys blue-hour city photography." }, cookies);
+  assert.equal(saved.status, 201);
+  const state = await saved.json();
+  assert.ok(state.memories.every((memory: { fanId: string }) => memory.fanId === "fan-alex"));
+  const voice = await fanApi("fan/sessions", "POST", { fanId: "fan-alex", surface: "voice" }, cookies);
+  const { sessionId } = await voice.json();
+  const reply = await fanApi(`fan/sessions/${sessionId}/messages`, "POST", message("What do you remember?"), cookies);
+  assert.match((await reply.json()).sessions[0].messages.at(-1).text, /blue-hour/);
+  assert.equal((await fanApi("fan/fans/fan-alex", "PATCH", { memoryConsent: false }, cookies)).status, 200);
+  assert.equal(getState(fan).memories.length, 0);
+  assert.equal((await fanApi("fan/memories", "POST", { fanId: "fan-alex", text: "Likes music" }, cookies)).status, 403);
+  assert.equal(getState(operator).memories.filter(memory => memory.fanId === "fan-jordan").length, 1);
 });

@@ -3380,3 +3380,23 @@ td {
     font-size: 10px;
   }
 }
+.studio-fan-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 10px;
+  text-decoration: none;
+  color: #365cdb;
+  font-size: 12px;
+}
+@media (max-width: 700px) {
+  .studio-fan-link {
+    font-size: 10px;
+    padding: 0 3px;
+    gap: 3px;
+  }
+  .top-actions {
+    gap: 6px;
+  }
+}

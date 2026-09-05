@@ -591,3 +591,38 @@ export function reset(actor: Actor) {
     return snapshot(data, actor);
   });
 }
+
+/** Called only by the loopback-gated fan demo bootstrap, never a general fan action. */
+export function initializeFanDemo(
+  actor: Actor,
+  provisionNewWorkspace: boolean,
+): PresenceState {
+  if (actor.role !== "fan")
+    throw new HttpError(403, "Fan demo identity required.");
+  return transact(actor.workspaceId, (data, isNewWorkspace) => {
+    if (provisionNewWorkspace && isNewWorkspace) {
+      data.creator.licenseStatus = "active";
+      data.creator.enabled = true;
+      data.creator.likenessAuthorized = true;
+      data.creator.voiceAuthorized = true;
+      data.creator.authorizedAt = now();
+      data.creator.licenseVersion++;
+      data.creator.policyVersion++;
+      audit(
+        data,
+        { ...actor, role: "admin", fanId: undefined },
+        "license.demo.seeded",
+        data.creator.id,
+        "New fan-first local demo only: seeded fictional adult identity authorization. No real ownership verification or legal consent claimed. Existing creator controls are never reactivated by fan entry.",
+      );
+    }
+    audit(
+      data,
+      actor,
+      "fan.demo.opened",
+      actor.fanId!,
+      "Separate fan-scoped cookie initialized; studio operator session preserved. Local fictional role selection, not production authentication.",
+    );
+    return snapshot(data, actor);
+  });
+}

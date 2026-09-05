@@ -1,0 +1,274 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  position: relative;
+  background: #151618;
+  color: #f1efec;
+}
+.loading,
+.paused {
+  min-height: 360px;
+  height: 100%;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #151618;
+  color: #f1efec;
+}
+.loading > span,
+.eyebrow {
+  font:
+    500 10px/1.4 Arial,
+    sans-serif;
+  letter-spacing: 0.2em;
+  color: #c1c4ca;
+}
+.loading p,
+.paused h2 {
+  margin: 18px 0;
+  font:
+    400 clamp(26px, 4vw, 42px)/1.1 Georgia,
+    serif;
+  letter-spacing: -0.04em;
+}
+.paused p {
+  color: #bfc0c4;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 340px;
+  margin-bottom: 22px;
+}
+.stage {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  position: relative;
+  overflow: hidden;
+  background: #151618;
+  color: #f1efec;
+  isolation: isolate;
+}
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+.fallback {
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(46%, 300px);
+  height: 52%;
+  background: url("/mira-vale.png") center 35% / cover;
+  border: 1px solid #c7c2b6;
+}
+.header {
+  position: absolute;
+  inset: 28px 30px auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  pointer-events: none;
+}
+.header > div {
+  text-shadow: 0 2px 20px #111;
+}
+.header p {
+  margin: 10px 0 0;
+  font:
+    400 13px/1.4 Arial,
+    sans-serif;
+  color: #e4e3e3;
+}
+.button {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 17px;
+  border: 1px solid #8c8d924d;
+  border-radius: 30px;
+  color: #f4f2ef;
+  background: #22242be8;
+  font:
+    500 12px/1.4 Arial,
+    sans-serif;
+  cursor: pointer;
+  pointer-events: auto;
+  transition:
+    background-color 0.16s,
+    border-color 0.16s;
+}
+.button:hover {
+  background: #343841;
+  border-color: #cdd2dc8c;
+}
+.button:focus-visible {
+  outline: 2px solid #bdcee7;
+  outline-offset: 4px;
+}
+.button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.footer {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 90px 30px 28px;
+  background: linear-gradient(transparent, #151618e8 43%, #151618);
+  pointer-events: none;
+}
+.footer h2 {
+  font:
+    400 clamp(32px, 4.5vw, 52px)/1.04 Georgia,
+    serif;
+  letter-spacing: -0.04em;
+  margin: 9px 0 13px;
+}
+.footer p {
+  font:
+    400 12px/1.55 Arial,
+    sans-serif;
+  max-width: 400px;
+  margin: 0;
+  color: #c5c6cb;
+}
+.footer .disclosure {
+  color: #eeeded;
+  margin-top: 16px;
+  font-size: 12px;
+}
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  pointer-events: auto;
+}
+.orbitButton {
+  padding-inline: 13px;
+  font-size: 18px;
+}
+.status {
+  margin-top: 14px !important;
+  color: #bcbfc6 !important;
+  font-size: 11px !important;
+}
+.error {
+  color: #efd1ba !important;
+}
+.instruction {
+  font:
+    400 10px/1.4 Arial,
+    sans-serif;
+  color: #bcbfc6;
+  padding-left: 5px;
+}
+.stage[data-compact="true"] .description {
+  display: none;
+}
+.stage[data-compact="true"] .header {
+  top: 15px;
+}
+.stage[data-compact="true"] .header p {
+  margin-top: 6px;
+  font-size: 10px;
+}
+.stage[data-compact="true"] .header .eyebrow {
+  font-size: 9px;
+}
+.stage[data-compact="true"] .footer {
+  padding-top: 24px;
+  padding-bottom: 12px;
+}
+.stage[data-compact="true"] .footer > .eyebrow,
+.stage[data-compact="true"] .footer h2 {
+  display: none;
+}
+.stage[data-compact="true"] .disclosure {
+  margin-top: 0;
+  font-size: 10px;
+}
+.stage[data-compact="true"] .controls {
+  margin-top: 7px;
+}
+.stage[data-compact="true"] .status {
+  margin-top: 6px !important;
+  font-size: 10px !important;
+}
+@media (max-width: 600px) {
+  .header {
+    inset: 22px 20px auto;
+    gap: 12px;
+  }
+  .header p {
+    max-width: 210px;
+    font-size: 11px;
+  }
+  .header .button {
+    padding: 10px 14px;
+    font-size: 11px;
+  }
+  .eyebrow {
+    font-size: 9px;
+  }
+  .footer {
+    padding: 70px 22px 24px;
+  }
+  .footer h2 {
+    font-size: 35px;
+  }
+  .footer p {
+    font-size: 12px;
+    max-width: 340px;
+  }
+  .footer .disclosure {
+    margin-top: 10px;
+    font-size: 11px;
+  }
+  .controls {
+    margin-top: 14px;
+    gap: 7px;
+  }
+  .status {
+    font-size: 10px !important;
+    max-width: 310px !important;
+  }
+  .instruction {
+    display: none;
+  }
+}
+@media (max-height: 680px) {
+  .footer h2 {
+    font-size: 28px;
+  }
+  .footer .description {
+    display: none;
+  }
+  .footer {
+    padding-top: 50px;
+    padding-bottom: 16px;
+  }
+  .footer .disclosure {
+    margin-top: 8px;
+  }
+  .controls {
+    margin-top: 10px;
+  }
+  .status {
+    margin-top: 8px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}

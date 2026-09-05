@@ -1,0 +1,32 @@
+{
+  "verifiedAt": "2026-09-05T18:17:08.967203+00:00",
+  "target": "http://127.0.0.1:3001",
+  "buildMode": "production",
+  "browser": "installed Google Chrome via Playwright channel chrome",
+  "command": "PRESENCE_TEST_URL=http://127.0.0.1:3001 PRESENCE_BROWSER_CHANNEL=chrome npx playwright test --reporter=list",
+  "passed": 19,
+  "failed": 0,
+  "fanJourneys": 12,
+  "legacyCreatorJourneys": 7,
+  "reportedDuration": "1.2 minutes",
+  "axeScans": 14,
+  "axeViolations": 0,
+  "viewports": ["390x844", "1440x1000"],
+  "evidence": [
+    "output/playwright/fan/axe-fan.json",
+    "output/playwright/fan/axe-demo-director.json",
+    "output/playwright/axe-desktop.json",
+    "output/playwright/axe-mobile.json",
+    "output/playwright/fan/mobile-entry.png",
+    "output/playwright/fan/mobile-spatial.png",
+    "output/playwright/fan/mobile-takeover.png",
+    "output/playwright/fan/mobile-demo-director.png",
+    "output/playwright/fan/desktop-entry.png"
+  ],
+  "limitations": [
+    "Speech synthesis and recognition lifecycle tests use deterministic browser API mocks; no real microphone, audio quality or headset certification claimed.",
+    "Spatial checks exercise local browser WebGL; real-device WebXR behavior remains hardware-dependent.",
+    "Automated axe checks do not establish complete accessibility compliance."
+  ],
+  "pendingIssues": []
+}

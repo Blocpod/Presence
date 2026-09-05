@@ -16,11 +16,15 @@ PRESENCE 0.1.0 is a working, polished **local executive demonstration** in the B
 
 Conversation uses deterministic local generation. Browser voice is not a licensed clone; microphone transcription may use the browser vendor. Visual is a still image in a 3D room, not a photoreal realtime human. Real headset/microphone/speaker quality depends on hardware. Role/identity verification is explicitly fictional and local. Storage is a SQLite JSON aggregate per workspace, not normalized PostgreSQL or multi-node infrastructure. SSE/WebSockets, partner SSO, real verification, cloud model/avatar integrations, webhooks and real billing are not deployed. Basic filters, logical deletion and an unbounded-by-time transcript require hardening for real personal data. No real-person or platform partnership is claimed.
 
+## Fan experience added
+
+The fan now has a dedicated portrait-led mobile experience at `/presence/mira`; `/studio` and `/demo` expose both sides. Same workspace, separate signed roles. Voice is optional, memory follows every surface, Visual reveals writing on intent, Spatial replaces the portrait with an architectural room, and human arrival preserves clear operator authorship. Creator pause, revocation and entitlements propagate through the actual runtime. See docs/FAN-EXPERIENCE.md and docs/FAN-DESIGN-REVIEW.md for the product thesis, three design loops and honest scoring.
+
 ## Current work
 
 The current brand palette is graphite, porcelain and restrained blue, replacing the initial olive/sage direction following user feedback.
 
-Release verification is complete. Production-build browser journeys pass and evidence is packaged. No production systems or paid APIs are involved. GitHub synchronization status is reported in the task handoff.
+Fan release verification is complete: 22 runtime/voice tests, 19 production browser journeys and14 automated accessibility scans pass. Independent final design review scores 91.4/100; the 95+ target is not claimed. EVALS.md and docs/FAN-DESIGN-REVIEW.md record the evidence and remaining qualitative refinement. No production systems or paid APIs are involved.
 
 ## Next highest-leverage work
 

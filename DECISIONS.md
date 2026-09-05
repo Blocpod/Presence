@@ -69,3 +69,13 @@ Decisions made 2026-09-05. [RESEARCH.md](RESEARCH.md) records evidence; [ARCHITE
 **Reason:** A credible diligence package should expose commodity components and identify what needs evidence.
 
 **Consequence:** Acquisition cannot be justified by a novel-looking interface alone. Demonstrate repeatable governance, audited isolation, permission portability and partner integration economics before claiming a defensible asset.
+
+## Fan encounter — 2026-09-05
+
+Choose a portrait-led private encounter, with shared-memory annotation and optional spatial escalation. Rejected a notebook-first UI because it makes memory management dominant; rejected a 3D-first room because it makes the weakest current renderer carry the whole product. Primary-source visual research and the competing directions are in docs/FAN-RESEARCH.md.
+
+Use a separate signed fan cookie and API namespace. Sharing the studio cookie would silently change the role in another open tab. The local-only fan-first bootstrap may provision a new audited fictional demo workspace, but may never reactivate an existing workspace. The operator-only director is an explicit demo affordance, not fan self-service entitlements or takeover.
+
+Retain CSS/native motion and a single measured SVG path; lazy-load Three.js only for Spatial. A heavyweight motion library and automatic audio add cost without improving this encounter. Generic browser voice is opt-in; automatic microphone submission requires a specific fan choice, and capture is canceled on consent/role/policy/visibility changes.
+
+Keep latest authored context visibly continuous across newly authorized surface sessions. Present a clear excerpt affordance for long replies. Preserve pending request IDs across uncertain network failures, verified with a server-committed/browser-aborted response.

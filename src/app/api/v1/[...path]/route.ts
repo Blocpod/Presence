@@ -4,6 +4,7 @@ import { readJsonBody } from "../../../../lib/server/request";
 import {
   bootstrapActor,
   COOKIE,
+  FAN_COOKIE,
   HttpError,
   localDemoAllowed,
   readActor,
@@ -16,6 +17,7 @@ import {
   deleteFanMemories,
   deleteMemory,
   getState,
+  initializeFanDemo,
   patchCreator,
   patchFan,
   reset,
@@ -37,14 +39,53 @@ async function handle(
   context: { params: Promise<{ path: string[] }> },
 ) {
   try {
-    const { path } = await context.params;
+    const { path: originalPath } = await context.params;
+    const fanNamespace = originalPath[0] === "fan";
+    const path = fanNamespace ? originalPath.slice(1) : originalPath;
     const route = path.join("/");
     const method = request.method;
     if (method !== "GET") sameOrigin(request);
     let input: unknown = {};
     if (["POST", "PATCH"].includes(method)) input = await readJsonBody(request);
-    const actor = readActor(request);
-    if (route === "demo" && method === "POST") {
+    const operatorActor = readActor(request);
+    const actor = fanNamespace ? readActor(request, FAN_COOKIE) : operatorActor;
+    if (fanNamespace && route === "demo" && method === "POST") {
+      localDemoAllowed(request);
+      const body = z
+        .object({
+          role: z.literal("fan").optional(),
+          fanId: z.enum(["fan-alex", "fan-jordan", "fan-sam"]).optional(),
+        })
+        .strict()
+        .parse(input);
+      const prior = operatorActor || actor;
+      const next = bootstrapActor(
+        "fan",
+        body.fanId || actor?.fanId || "fan-alex",
+        prior,
+      );
+      const result = response(initializeFanDemo(next, !prior));
+      const cookieOptions = {
+        httpOnly: true,
+        sameSite: "strict" as const,
+        secure: new URL(request.url).protocol === "https:",
+        path: "/",
+        maxAge: 8 * 3600,
+      };
+      result.cookies.set(
+        FAN_COOKIE,
+        signActor(next, FAN_COOKIE),
+        cookieOptions,
+      );
+      // A fresh fan-first demo also needs a studio operator for executive takeover.
+      // This minting is confined to the same explicit loopback demo gate above.
+      if (!operatorActor) {
+        const operator = bootstrapActor("creator", undefined, next);
+        result.cookies.set(COOKIE, signActor(operator), cookieOptions);
+      }
+      return result;
+    }
+    if (!fanNamespace && route === "demo" && method === "POST") {
       localDemoAllowed(request);
       const body = z
         .object({
@@ -68,6 +109,16 @@ async function handle(
       throw new HttpError(
         401,
         "Open the local demo to initialize your isolated session.",
+      );
+    if (fanNamespace && ["creator", "reset", "demo"].includes(path[0]))
+      throw new HttpError(
+        403,
+        "Creator controls are not available in the fan API.",
+      );
+    if (fanNamespace && path[0] === "sessions" && path[2] === "takeover")
+      throw new HttpError(
+        403,
+        "Only the creator operator can take over a session.",
       );
     if (route === "state" && method === "GET") return response(getState(actor));
     if (route === "creator" && method === "PATCH")

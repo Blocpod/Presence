@@ -4,7 +4,7 @@ const baseURL = process.env.PRESENCE_TEST_URL || "http://127.0.0.1:3000";
 
 export default defineConfig({
   testDir: "./tests",
-  testMatch: "**/journeys.spec.ts",
+  testMatch: "**/*.spec.ts",
   fullyParallel: false,
   workers: 1,
   timeout: 45000,

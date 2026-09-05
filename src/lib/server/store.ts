@@ -216,7 +216,7 @@ export function signingSecret(): string {
       .get("cookie_secret") as { value: string }
   ).value;
 }
-export function transact<T>(workspace: string, fn: (data: Data) => T): T {
+export function transact<T>(workspace: string, fn: (data: Data, isNewWorkspace: boolean) => T): T {
   return db().transaction(() => {
     const row = db()
       .prepare("SELECT data FROM workspaces WHERE id = ?")
@@ -240,7 +240,7 @@ export function transact<T>(workspace: string, fn: (data: Data) => T): T {
             "[Personalized content removed by memory retention policy.]";
           message.memoryIds = [];
         }
-    const result = fn(data);
+    const result = fn(data, !row);
     db()
       .prepare(
         "INSERT INTO workspaces (id,data,updated_at) VALUES (?,?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data,updated_at=excluded.updated_at",

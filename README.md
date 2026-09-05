@@ -4,6 +4,8 @@
 
 A working creator infrastructure demo: one fictional licensed identity, distinct fan relationships, persistent memory, creator controls, multimodal surfaces, human takeover and sandbox metering. Designed as a layer inside an incumbent platform, not a competing social network.
 
+![PRESENCE fan encounter](docs/screenshots/fan-desktop-entry.png)
+
 ![PRESENCE creator studio](docs/screenshots/studio.png)
 
 ## Run locally
@@ -16,7 +18,9 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open **http://localhost:3000**. Choose **Activate your Presence**, review the fictional identity authorization, then open a conversation. No API keys, paid services or external account needed. The SQLite database is created in `.data/` and persists across restarts. Each browser session gets an isolated demo workspace via a signed HttpOnly cookie.
+Open **http://localhost:3000/demo** to choose the fan encounter or creator studio. A fresh fan-first demo provisions fictional Mira and Alex; an existing paused/pending/revoked workspace keeps its creator decisions. `/presence/mira` opens the fan encounter, `/studio` opens creator controls, and `/` remains compatible.
+
+In the studio, choose **Activate your Presence**, review the fictional identity authorization, then open a conversation. No API keys, paid services or external account needed. The SQLite database is created in `.data/` and persists across restarts. Each browser session gets an isolated demo workspace via a signed HttpOnly cookie.
 
 For a production-build local preview:
 
@@ -37,7 +41,9 @@ The `.env.local` setting `PRESENCE_ENABLE_LOCAL_DEMO=true` enables the local dem
 6. Inspect **Revenue** for actual sandbox events, then adjust the separately labeled economic scenario.
 7. Pause or revoke from **My Presence**. Existing sessions stop accepting interactions. Open two tabs to observe propagation within approximately three seconds; server enforcement is immediate.
 
-**Executive demo** walks through seven chapters. See [the six-minute script](docs/DEMO-SCRIPT.md) and [acquisition brief](docs/ACQUISITION-BRIEF.md).
+**The two-sided demo** at `/demo` lets an operator trigger Mira’s arrival, pause Presence or change sandbox access while the fan view stays open. The fan sees the real shared runtime respond. Separate signed cookies keep the fan and creator roles independent in one browser.
+
+The studio’s **Executive demo** also walks through seven chapters. See [the six-minute script](docs/DEMO-SCRIPT.md) and [acquisition brief](docs/ACQUISITION-BRIEF.md).
 
 ## Verification
 
@@ -50,7 +56,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-See [EVALS.md](EVALS.md) for measured results and limits, [docs/QA-REVIEW.md](docs/QA-REVIEW.md) for independent browser review, and [docs/BUILD-LOG.md](docs/BUILD-LOG.md) for the engineering loop.
+See [the fan experience](docs/FAN-EXPERIENCE.md) and [independent fan design review](docs/FAN-DESIGN-REVIEW.md). See [EVALS.md](EVALS.md) for measured results and limits, [docs/QA-REVIEW.md](docs/QA-REVIEW.md) for independent browser review, and [docs/BUILD-LOG.md](docs/BUILD-LOG.md) for the engineering loop.
 
 ## Honest capability boundary
 

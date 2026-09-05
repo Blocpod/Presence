@@ -2,6 +2,8 @@ import { createHmac, timingSafeEqual, randomUUID } from "node:crypto";
 import type { Actor } from "../types";
 import { signingSecret } from "./store";
 export const COOKIE = "presence_demo";
+export const FAN_COOKIE = "presence_fan";
+export type SessionCookie = typeof COOKIE | typeof FAN_COOKIE;
 export class HttpError extends Error {
   constructor(
     public status: number,
@@ -10,19 +12,25 @@ export class HttpError extends Error {
     super(message);
   }
 }
-export function signActor(actor: Actor): string {
+export function signActor(
+  actor: Actor,
+  audience: SessionCookie = COOKIE,
+): string {
   const payload = Buffer.from(
-    JSON.stringify({ ...actor, expires: Date.now() + 8 * 3600e3 }),
+    JSON.stringify({ ...actor, audience, expires: Date.now() + 8 * 3600e3 }),
   ).toString("base64url");
   return `${payload}.${createHmac("sha256", signingSecret()).update(payload).digest("base64url")}`;
 }
-export function readActor(request: Request): Actor | null {
+export function readActor(
+  request: Request,
+  cookie: SessionCookie = COOKIE,
+): Actor | null {
   const token = request.headers
     .get("cookie")
     ?.split(";")
     .map((x) => x.trim())
-    .find((x) => x.startsWith(`${COOKIE}=`))
-    ?.slice(COOKIE.length + 1);
+    .find((x) => x.startsWith(`${cookie}=`))
+    ?.slice(cookie.length + 1);
   if (!token || token.length > 2000) return null;
   const [payload, signature, extra] = token.split(".");
   if (!payload || !signature || extra) return null;
@@ -37,7 +45,12 @@ export function readActor(request: Request): Actor | null {
   try {
     const decoded = JSON.parse(Buffer.from(payload, "base64url").toString());
     if (
+      typeof decoded.expires !== "number" ||
+      !Number.isFinite(decoded.expires) ||
       decoded.expires < Date.now() ||
+      (decoded.audience !== cookie &&
+        !(cookie === COOKIE && decoded.audience === undefined)) ||
+      (cookie === FAN_COOKIE && decoded.role !== "fan") ||
       !["creator", "fan", "admin"].includes(decoded.role) ||
       typeof decoded.workspaceId !== "string"
     )
@@ -65,11 +78,22 @@ function requestOrigin(request: Request): URL {
   // never trusted. Both endpoints must be loopback before this local override.
   const loopback = ["localhost", "127.0.0.1", "[::1]"];
   let direct: URL;
-  try { direct = new URL(`${url.protocol}//${host}`); }
-  catch { throw new HttpError(403, "Invalid request host."); }
-  if (direct.host !== host || direct.username || direct.password || direct.pathname !== "/")
+  try {
+    direct = new URL(`${url.protocol}//${host}`);
+  } catch {
     throw new HttpError(403, "Invalid request host.");
-  if (direct.origin !== url.origin && (!loopback.includes(url.hostname) || !loopback.includes(direct.hostname)))
+  }
+  if (
+    direct.host !== host ||
+    direct.username ||
+    direct.password ||
+    direct.pathname !== "/"
+  )
+    throw new HttpError(403, "Invalid request host.");
+  if (
+    direct.origin !== url.origin &&
+    (!loopback.includes(url.hostname) || !loopback.includes(direct.hostname))
+  )
     throw new HttpError(403, "Request host does not match the local runtime.");
   return direct;
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   Activity,
@@ -356,6 +357,9 @@ export default function Studio() {
             <strong>{page}</strong>
           </div>
           <div className="top-actions">
+            <Link className="studio-fan-link" href="/demo">
+              Fan experience <ArrowUpRight size={14} />
+            </Link>
             <span className="sandbox-label">
               <span />
               Sandbox mode

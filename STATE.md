@@ -18,6 +18,8 @@ Conversation uses deterministic local generation. Browser voice is not a license
 
 ## Current work
 
+The current brand palette is graphite, porcelain and restrained blue, replacing the initial olive/sage direction following user feedback.
+
 Release verification is complete. Production-build browser journeys pass and evidence is packaged. No production systems or paid APIs are involved. GitHub synchronization status is reported in the task handoff.
 
 ## Next highest-leverage work

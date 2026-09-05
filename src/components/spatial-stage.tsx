@@ -14,9 +14,9 @@ type StageRuntime = {
 type Props = { speaking?: boolean; active?: boolean; onClose?: () => void };
 
 const buttonStyle = {
-  border: "1px solid #d9ddcb4d",
-  background: "#18231ee8",
-  color: "#f0eee3",
+  border: "1px solid #dadbdd4d",
+  background: "#202123e8",
+  color: "#edeef0",
   padding: "10px 15px",
   borderRadius: 24,
   font: "inherit",
@@ -80,8 +80,8 @@ export default function SpatialStage({
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#111715");
-    scene.fog = new THREE.Fog("#111715", 6, 15);
+    scene.background = new THREE.Color("#151618");
+    scene.fog = new THREE.Fog("#151618", 6, 15);
     const camera = new THREE.PerspectiveCamera(42, 1, 0.05, 40);
     camera.position.set(0, 1.6, 4.4);
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -100,12 +100,12 @@ export default function SpatialStage({
     scene.add(room);
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(30, 30),
-      new THREE.MeshBasicMaterial({ color: "#151d18" }),
+      new THREE.MeshBasicMaterial({ color: "#1a1b1d" }),
     );
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -0.015;
     room.add(floor);
-    const grid = new THREE.GridHelper(24, 40, "#4d5845", "#28342b");
+    const grid = new THREE.GridHelper(24, 40, "#545557", "#303133");
     grid.material.transparent = true;
     grid.material.opacity = 0.36;
     room.add(grid);
@@ -115,11 +115,11 @@ export default function SpatialStage({
     scene.add(portraitGroup);
     const backing = new THREE.Mesh(
       new THREE.BoxGeometry(1.86, 2.62, 0.045),
-      new THREE.MeshBasicMaterial({ color: "#73806a" }),
+      new THREE.MeshBasicMaterial({ color: "#7b7c7e" }),
     );
     portraitGroup.add(backing);
     const portraitMaterial = new THREE.MeshBasicMaterial({
-      color: "#e4dfd1",
+      color: "#dedfe1",
       side: THREE.FrontSide,
     });
     const portrait = new THREE.Mesh(
@@ -163,13 +163,13 @@ export default function SpatialStage({
     labelCanvas.height = 160;
     const context = labelCanvas.getContext("2d");
     if (context) {
-      context.fillStyle = "#111715";
+      context.fillStyle = "#151618";
       context.fillRect(0, 0, 1024, 160);
       context.textAlign = "center";
-      context.fillStyle = "#e8e9db";
+      context.fillStyle = "#e7e8ea";
       context.font = "36px sans-serif";
       context.fillText("MIRA VALE · AI REPRESENTATION", 512, 60);
-      context.fillStyle = "#aab8a1";
+      context.fillStyle = "#b3b4b6";
       context.font = "26px sans-serif";
       context.fillText(
         "Fictional adult · spatial portrait · not live video",
@@ -194,7 +194,7 @@ export default function SpatialStage({
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(1.4 + i * 0.45, 1.407 + i * 0.45, 120),
         new THREE.MeshBasicMaterial({
-          color: "#b5c692",
+          color: "#bebfc1",
           transparent: true,
           opacity: 0.34 - i * 0.07,
           side: THREE.DoubleSide,
@@ -311,14 +311,14 @@ export default function SpatialStage({
       // A local reference space starts at the viewer's initial eye position.
       current.scene.position.y = -1.2;
       current.scene.background =
-        mode === "immersive-ar" ? null : new THREE.Color("#111715");
+        mode === "immersive-ar" ? null : new THREE.Color("#151618");
       current.room.visible = mode !== "immersive-ar";
       session.addEventListener(
         "end",
         () => {
           current.session = null;
           current.scene.position.y = 0;
-          current.scene.background = new THREE.Color("#111715");
+          current.scene.background = new THREE.Color("#151618");
           current.room.visible = true;
           if (runtime.current === current) {
             setImmersive(false);
@@ -332,7 +332,7 @@ export default function SpatialStage({
     } catch {
       if (session) await session.end().catch(() => {});
       current.scene.position.y = 0;
-      current.scene.background = new THREE.Color("#111715");
+      current.scene.background = new THREE.Color("#151618");
       current.room.visible = true;
       setError(
         "Immersive mode could not start. Check device access and continue exploring the 3D preview.",
@@ -344,7 +344,7 @@ export default function SpatialStage({
 
   if (!active)
     return (
-      <div className="spatial-paused" style={{ padding: 32, color: "#c9d1c3" }}>
+      <div className="spatial-paused" style={{ padding: 32, color: "#cdced0" }}>
         Spatial presence is paused.
       </div>
     );
@@ -357,10 +357,10 @@ export default function SpatialStage({
         position: "relative",
         minHeight: 180,
         height: "100%",
-        background: "#111715",
+        background: "#151618",
         overflow: "hidden",
         borderRadius: 20,
-        color: "#eeeee3",
+        color: "#ecedef",
       }}
     >
       <div ref={hostRef} style={{ position: "absolute", inset: 0 }} />
@@ -382,7 +382,7 @@ export default function SpatialStage({
               fontSize: compact ? 9 : 10,
               letterSpacing: ".19em",
               textTransform: "uppercase",
-              color: "#b5c692",
+              color: "#bebfc1",
             }}
           >
             Spatial presence
@@ -409,21 +409,25 @@ export default function SpatialStage({
           left: 0,
           right: 0,
           padding: compact ? "16px 18px 10px" : "45px 24px 22px",
-          background: "linear-gradient(transparent, #111715 55%)",
+          background: "linear-gradient(transparent, #151618 55%)",
         }}
       >
-        {!compact && <p style={{ fontSize: 12, margin: "0 0 6px" }}>
-          One identity. A new dimension.
-        </p>}
+        {!compact && (
+          <p style={{ fontSize: 12, margin: "0 0 6px" }}>
+            One identity. A new dimension.
+          </p>
+        )}
         <p
           style={{
-            color: "#a9b2a3",
+            color: "#aeafb1",
             fontSize: compact ? 10 : 11,
             lineHeight: 1.6,
             margin: compact ? 0 : "0 0 12px",
           }}
         >
-          {compact ? "3D portrait · not live video · drag to orbit" : "Interactive 3D portrait, not live video. Drag to orbit · scroll to zoom · arrow keys to explore."}
+          {compact
+            ? "3D portrait · not live video · drag to orbit"
+            : "Interactive 3D portrait, not live video. Drag to orbit · scroll to zoom · arrow keys to explore."}
         </p>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {vr === "available" && (
@@ -459,7 +463,7 @@ export default function SpatialStage({
         <p
           role="status"
           style={{
-            color: error ? "#e9c1a5" : "#a9b2a3",
+            color: error ? "#e9c1a5" : "#aeafb1",
             fontSize: compact ? 9 : 10,
             lineHeight: 1.5,
             margin: compact ? "3px 0 0" : "10px 0 0",
@@ -471,7 +475,9 @@ export default function SpatialStage({
               : vr === "checking" || ar === "checking"
                 ? "Checking immersive device support…"
                 : vr === "unavailable" && ar === "unavailable"
-                  ? compact ? "AR / VR requires a compatible WebXR device." : "3D preview available · AR / VR needs a compatible WebXR device and secure connection."
+                  ? compact
+                    ? "AR / VR requires a compatible WebXR device."
+                    : "3D preview available · AR / VR needs a compatible WebXR device and secure connection."
                   : "Immersive preview available. Your device will request permission to enter.")}
         </p>
       </div>

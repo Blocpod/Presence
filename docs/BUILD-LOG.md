@@ -35,3 +35,9 @@ Hypothesis: transactional local runtime can demonstrate distinct relationships a
 Evidence: production build succeeds; strict typecheck and lint clean; 17/17 runtime/security/voice tests pass. Thirty local deterministic replies across three relationships generated exactly thirty sandbox events ($7.50 gross, zero real charges), median 6.18 ms / p95 9.75 ms loopback HTTP. This is sequential local evidence, not a model/network or load benchmark. Raw measurement in RUNTIME-MEASUREMENTS.json. Keep.
 
 Release package includes original mission, API/architecture, research with primary sources, decision records, acquisition brief, six-minute demo script, privacy/security reviews, evaluation report, roadmap and screenshots. Next experiment: design-partner pilot measuring approval, willingness to pay, policy failures and net incremental contribution margin.
+
+## Loop — neutral brand palette
+
+User feedback: the olive/sage brand colors were not working. Applied a graphite and porcelain palette with restrained blue on selected navigation, primary actions, controls and the economic chart. Neutralized the conversation overlays and WebGL room; preserved readable contrast and semantic warning colors. Named the primary accent tokens by purpose instead of the prior green/lime hues.
+
+Verification: strict typecheck, lint, 17 tests and production build pass. All seven browser journeys pass (33.3s), including zero axe violations on tested desktop pages and mobile conversation. Visually checked the revised overview in the existing in-app production preview at port 3001. Updated the committed screenshots. This is a new palette iteration; the original independent design score describes the earlier release and is not a new user preference study.

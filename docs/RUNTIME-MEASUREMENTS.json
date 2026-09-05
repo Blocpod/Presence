@@ -1,0 +1,14 @@
+{
+  "measuredAt": "2026-09-05T16:59:57.490Z",
+  "mode": "optimized local build; deterministic adapter; loopback HTTP; no external inference",
+  "samples": 30,
+  "relationships": 3,
+  "medianMs": 6.18,
+  "p95Ms": 9.75,
+  "maxMs": 14.17,
+  "deliveredReplies": 30,
+  "sandboxEvents": 30,
+  "grossCents": 750,
+  "realCharges": 0,
+  "limitations": "Sequential smoke benchmark, not a concurrent-load or generative-model latency test."
+}
